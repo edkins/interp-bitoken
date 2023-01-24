@@ -11,5 +11,5 @@ model = HookedTransformer.from_pretrained('gpt2-small', device=device)
 bitokens = get_bitokens(model.tokenizer)
 
 # Print the most common ones
-for bitoken, count in bitokens.most_common(15):
+for bitoken, count in bitokens.most_common(50):
     print(f'{bitoken:20}', f'{count:4}', [model.tokenizer.decode([t]) for t in model.tokenizer.encode(' ' + bitoken)])
