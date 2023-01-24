@@ -14,7 +14,7 @@ bitokens = ['shear', 'binomial', 'tangent', 'detergent']
 
 # Print the most common ones
 for bitoken in bitokens:
-    for s in get_sentences_containing(bitoken):
+    for s in get_sentences_containing(bitoken)[:1]:
         print(s)
         tokens, highlighted = tokenize_and_highlight(model.tokenizer, s, bitoken)
         strtokens = model.to_str_tokens(s)
@@ -27,12 +27,13 @@ for bitoken in bitokens:
                 colors = torch.zeros((len(tokens), len(tokens), 3))
                 for i in range(len(tokens)):
                     for j in range(len(tokens)):
-                        colors[i,j,0] = 1 - math.sqrt(attn[head,i,j])
-                        colors[i,j,1] = 1 - math.sqrt(attn[head,i,j])
-                        colors[i,j,2] = 1 - math.sqrt(attn[head,i,j])
+                        value = math.sqrt(attn[head,i,j])
                         if highlighted[j] and j<len(tokens)-1 and highlighted[j+1]:
-                            colors[i,j,0] = 1
-                        if highlighted[j]:
-                            colors[i,j,2] *= 0.6
+                            colors[i,j,0] = value
+                        elif highlighted[j]:
+                            colors[i,j,1] = value
+                        else:
+                            colors[i,j,2] = value
+                ax[layer, head].set_axis_off()
                 ax[layer, head].imshow(colors)
         plt.show()
